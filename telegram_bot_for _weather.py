@@ -10,14 +10,16 @@ bot = telebot.TeleBot(token)
 
 @bot.message_handler(commands=['start'])
 def welcome(message):
-    bot.send_message(message.chat.id, f'Добро пожаловать!   {message.from_user.first_name} \n'
-                                      f'Что бы узнать погоду напишите названия города')
+    bot.send_message(message.chat.id, f'Добро пожаловать!'
+                              f'{message.from_user.first_name} \n'
+                              f'Что бы узнать погоду напишите названия города')
 
 
 @bot.message_handler(commands=['help'])
 def welcome(message):
     bot.send_message(message.chat.id,
-                     '/start запуск бота\n Что бы узнать погоду напишите названия города')
+                     '/start запуск бота\n Что бы узнать погоду '
+                     'напишите названия города')
 
 
 @bot.message_handler(content_types=['text'])
@@ -25,7 +27,8 @@ def test(message):
     city_name = message.text
 
     try:
-        params = {'APPID': api_weather, 'q': city_name, 'units': 'metric', 'lang': 'ru'}
+        params = {'APPID': api_weather, 'q': city_name, 'units': 'metric',
+                  'lang': 'ru'}
         result = requests.get(url, params=params)
         weather = result.json()
 
@@ -38,13 +41,17 @@ def test(message):
         elif weather["main"]['temp'] < 27:
             status = "Пейте много воды, на улице жарко!"
         else:
-            status = "Не выходите на улицу без надобности и пейте много воды, на улице жарко!"
+            status = "Не выходите на улицу без надобности " \
+                     "и пейте много воды, на улице жарко!"
 
-        bot.send_message(message.chat.id, "Сейчас в городе " + str(weather["name"]) + " температура " +
+        bot.send_message(message.chat.id, "Сейчас в городе " +
+                         str(weather["name"]) + " температура " +
                          str(weather["main"]['temp']) + "°C" + "\n" +
-                         "Влажность: " + str(int(weather['main']['humidity'])) + "%" + "\n" +
-                         "На улице сейчас " + str(weather['weather'][0]["description"]) + "\n" 
-                         "-------------------------------------------------------------------"
+                         "Влажность: " +
+                         str(int(weather['main']['humidity'])) + "%" + "\n" +
+                         "На улице сейчас " +
+                         str(weather['weather'][0]["description"]) + "\n" 
+                         "----------------------------------------------------"
                          "\n" + status)
 
     except:
